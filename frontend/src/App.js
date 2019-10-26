@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
+import Inventory from './Inventory.js';
+import Usage from './Usage.js';
 import logo from './CSIS.Stamp.Vert.eps200x200.jpg';
 import './index.css';
 
@@ -9,22 +11,75 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    this.getDataFromDb = this.getDataFromDb.bind(this);
 
     // initialize the state
     this.state = {
-      inventory: [],
-      usage: [],
+      data: {
+        inventory: [],
+        usage: [],
+        users: [],
+      },
       message: ' ',
+      intervalIsSet: false,
     };
   }
 
   // when the component mounts, first thing it does is fetch all existing data
   // in our db.  after that we put in polling logic to see if the db has changed
   // and update our UI
-  componentDidMount() { }
+  componentDidMount() { 
+
+
+    // first, fetch the the users info one time
+    fetch('http://' + host + ':4001/api/users', {
+      method: 'GET',
+      mode: 'cors',
+    })
+    .then((data) => data.json())
+    .then((res) => this.setState( this.data['users'] = res ));
+
+    // load all data initially
+    this.getDataFromDb();
+
+    // set auto refresh of data
+    if(!this.state.intervalIsSet) {
+      let interval = setInterval(this.getDataFromDb, 5000);
+      this.setState({ intervalIsSet: interval });
+    }
+  }
 
   // kill processes when we are done with it
-  componentWillUnmount() { }
+  componentWillUnmount() { 
+    if (this.state.intervalIsSet) {
+      clearInterval(this.state.intervalIsSet);
+      this.setState({ intervalIsSet: null });
+    }
+  }
+
+  // method to query the backend for inventory and usage history
+  getDataFromDb() {
+    
+    // first, fetch the inventory info
+    fetch('http://' + host + ':4001/api/inventory', {
+      method: 'GET',
+      mode: 'cors',
+    })
+    .then((data) => data.json())
+    .then((res) => this.setState( this.data['inventory'] = res ));
+
+    // second, fetch the usage log info
+    fetch('http://' + host + ':4001/api/usage', {
+      method: 'GET',
+      mode: 'cors',
+    })
+    .then((data) => data.json())
+    .then((res) => this.setState( this.data['usage'] = res ));
+
+    // log it to see if it worked
+    console.log(this.state);
+
+  }
 
   // deal with the page render
   render() {
@@ -68,6 +123,7 @@ class App extends Component {
         </div>
       </div>
     );
+  }
 }
 
 export default App;

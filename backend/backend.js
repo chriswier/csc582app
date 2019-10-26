@@ -49,12 +49,7 @@ async function init() {
 
 //  Handle inventory request
 async function handleInventoryRequest(request, response) {
-
-  // initialize a default response
-  let reply = {
-    size: 0,
-    inventory: [ ],
-  }
+  console.log("inventory request");
 
   // inventory variable to store SQL results from inventory
   let inventory = [];
@@ -67,11 +62,11 @@ async function handleInventoryRequest(request, response) {
       `SELECT * FROM INVENTORY`
     );
 
-    // if I have rows (I should), loop through and populate the inventory var
+    // if I have rows (I should), use the rows from results to populate the inventory var
     if(result.rows.length !== 0) {
        console.log(result.metaData);
        console.log(result.rows);
-       inventory = rows; 
+       inventory = result.rows; 
     }
   } catch(err) {
     console.error(err.message);
@@ -86,11 +81,54 @@ async function handleInventoryRequest(request, response) {
   }
 
   // update the reply
-  reply['inventory'] = inventory;
+  console.log("Inventory:",inventory,"\n");
 
   // return everything back
-  response.json(reply);
+  response.json(inventory);
+}
 
+//  Handle inventory request
+async function handleUsageRequest(request, response) {
+  console.log("usage request");
+
+  // inventory variable to store SQL results from usage
+  let usage = [];
+
+  // oracle lookup
+  let connection;
+  try {
+    connection = await oracledb.getConnection();
+    const result = await connection.execute(
+      `SELECT * FROM USAGE ORDER BY TIMELOG ASC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY`
+    );
+
+    // if I have rows (I should), use the rows from results to populate the usage var
+    if(result.rows.length !== 0) {
+       console.log(result.metaData);
+       console.log(result.rows);
+       usage = result.rows;
+    }
+    else {
+       console.log("No usage rows!");
+       console.log(result);
+    }
+  } catch(err) {
+    console.error(err.message);
+  } finally {
+    if(connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
+  // update the reply
+  console.log("Usage: ",usage,"\n");
+
+  // return everything back
+  response.json(usage);
 }
 
 
