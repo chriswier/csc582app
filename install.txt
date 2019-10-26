@@ -23,7 +23,8 @@ CREATE TABLE INVENTORY
 ( 
   INVID NUMBER PRIMARY KEY,
   NAME VARCHAR(40) NOT NULL,
-  QUANTITY NUMBER NOT NULL
+  QUANTITY NUMBER NOT NULL,
+  CHECK(QUANTITY>=0)
 );
 
 CREATE TABLE USERS
@@ -65,6 +66,18 @@ INSERT INTO USERS VALUES(4,'Victor');
 INSERT INTO USERS VALUES(5,'Ryan');
 INSERT INTO USERS VALUES(6,'Venkat');
 
+5.  Initialize some USAGE logs
+INSERT INTO USAGE VALUES(1,4,5,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(2,2,-10,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(1,10,10,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(3,4,2,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(4,1,1,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(5,9,10,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(1,13,2,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(1,14,-5,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(2,1,12,CURRENT_TIMESTAMP);
+INSERT INTO USAGE VALUES(1,4,2,CURRENT_TIMESTAMP);
+
 NodeJS Backend Setup:
 (run as your normal unprivileged user)
 -----------
@@ -81,3 +94,13 @@ NodeJS Backend Setup:
 6. $ npm install oracledb
 7. $ npm install body-parser
 8. Create backend.js !
+
+NodeJS Frontend React Setup:
+(run as your normal unprivileged user)
+----------
+1. $ sudo npm i -g create-react-app
+2. $ create-react-app frontend
+3. $ cd frontend
+4. $ rm src/App.css src/App.test.js src/index.css src/logo.svg
+5. $ Edit node_modules/react-scripts/scripts/start.js - set DEFAULT_PORT to default to 4000 not 3000
+6. $ Edit src/App.js, and other changes in src/ and public/ !
