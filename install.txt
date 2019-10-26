@@ -1,0 +1,83 @@
+NodeJS Setup for Centos7:
+----------
+
+1. (root) # curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+2. (root) # yum install -y nodejs
+3. Verify with:  node --version && npm --version
+
+SQL Setup:
+-----------
+1. Setup a Oracle username/pass to use.  Connect as SYSDBA user.
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+CREATE USER hwappuser IDENTIFIED BY csc582;
+GRANT CONNECT to hwappuser;
+GRANT CREATE SESSION to hwappuser;
+GRANT UNLIMITED TABLESPACE TO hwappuser;
+GRANT CREATE TABLE to hwappuser;
+GRANT CREATE VIEW, CREATE PROCEDURE TO hwappuser;
+GRANT CREATE ANY DIRECTORY TO hwappuser;
+COMMIT;
+
+2. Setup three tables for use.  Connect as hwappuser user.
+CREATE TABLE INVENTORY
+( 
+  INVID NUMBER PRIMARY KEY,
+  NAME VARCHAR(40) NOT NULL,
+  QUANTITY NUMBER NOT NULL
+);
+
+CREATE TABLE USERS
+(
+  USERID NUMBER PRIMARY KEY,
+  NAME VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE USAGE
+(
+  USERID NUMBER NOT NULL,
+  INVID NUMBER NOT NULL,
+  QUANTITY NUMBER NOT NULL,
+  TIMELOG DATE NOT NULL,
+  PRIMARY KEY(USERID,INVID,TIMELOG)
+);
+
+3. Initialize some initial inventory
+INSERT INTO INVENTORY VALUES(1,'Resistor',40);
+INSERT INTO INVENTORY VALUES(2,'Capacitor',10);
+INSERT INTO INVENTORY VALUES(3,'Diode',35);
+INSERT INTO INVENTORY VALUES(4,'Transistor',20);
+INSERT INTO INVENTORY VALUES(5,'Inductor',25);
+INSERT INTO INVENTORY VALUES(6,'Integrated Circuit',10);
+INSERT INTO INVENTORY VALUES(7,'Microcontroller',15);
+INSERT INTO INVENTORY VALUES(8,'Transformer',8);
+INSERT INTO INVENTORY VALUES(9,'Battery',50);
+INSERT INTO INVENTORY VALUES(10,'Fuses',30);
+INSERT INTO INVENTORY VALUES(11,'Relays',20);
+INSERT INTO INVENTORY VALUES(12,'Switches',5);
+INSERT INTO INVENTORY VALUES(13,'Motors',10);
+INSERT INTO INVENTORY VALUES(14,'Circuit Breakers',15);
+
+4.  Initialize some initial users
+INSERT INTO USERS VALUES(1,'Chris');
+INSERT INTO USERS VALUES(2,'Justin');
+INSERT INTO USERS VALUES(3,'Halil');
+INSERT INTO USERS VALUES(4,'Victor');
+INSERT INTO USERS VALUES(5,'Ryan');
+INSERT INTO USERS VALUES(6,'Venkat');
+
+NodeJS Backend Setup:
+(run as your normal unprivileged user)
+-----------
+1. $ mkdir -p backend
+2. $ cd backend
+3. $ npm init
+  -> Package name: backend
+  -> Version: 1.0.0
+  -> Description: CSC582 Example App Backend
+  -> Entry point: backend.js
+  -> Rest defaults...
+4. $ npm install cors
+5. $ npm install express
+6. $ npm install oracledb
+7. $ npm install body-parser
+8. Create backend.js !
