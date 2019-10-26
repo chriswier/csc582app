@@ -11,15 +11,13 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.getDataFromDb = this.getDataFromDb.bind(this);
+    //this.getDataFromDb = this.getDataFromDb.bind(this);
 
     // initialize the state
     this.state = {
-      data: {
-        inventory: [],
-        usage: [],
-        users: [],
-      },
+      users: [],
+      inventory: [],
+      usage: [],
       message: ' ',
       intervalIsSet: false,
     };
@@ -37,14 +35,14 @@ class App extends Component {
       mode: 'cors',
     })
     .then((data) => data.json())
-    .then((res) => this.setState( this.data['users'] = res ));
+    .then((res) => this.setState({ users: res }));
 
     // load all data initially
     this.getDataFromDb();
 
     // set auto refresh of data
     if(!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 5000);
+      let interval = setInterval(this.getDataFromDb, 20000);
       this.setState({ intervalIsSet: interval });
     }
   }
@@ -58,15 +56,15 @@ class App extends Component {
   }
 
   // method to query the backend for inventory and usage history
-  getDataFromDb() {
-    
+  getDataFromDb = () => {
+
     // first, fetch the inventory info
     fetch('http://' + host + ':4001/api/inventory', {
       method: 'GET',
       mode: 'cors',
     })
     .then((data) => data.json())
-    .then((res) => this.setState( this.data['inventory'] = res ));
+    .then((res) => this.setState({ inventory: res }));
 
     // second, fetch the usage log info
     fetch('http://' + host + ':4001/api/usage', {
@@ -74,10 +72,10 @@ class App extends Component {
       mode: 'cors',
     })
     .then((data) => data.json())
-    .then((res) => this.setState( this.data['usage'] = res ));
+    .then((res) => this.setState({ usage: res }));
 
     // log it to see if it worked
-    console.log(this.state);
+    console.log("new state",this.state);
 
   }
 
@@ -106,7 +104,7 @@ class App extends Component {
         <div style={{ float: 'left' }}>
           <img src={logo} style={logoFloatLeft} alt="UMFlint CSIS Logo" />
         </div>
-        <div class="headerBanner">
+        <div className="headerBanner">
           <span style={spanbold}>CSC582 Homework Example Inventory App &nbsp; <a href="https://github.com/chriswier/csc582app" target="_blank" rel="noopener noreferrer">(Github)</a></span><br />
           Chris Wieringa cwiering@umich.edu<br />
           Fall 2019 Semester<br />
@@ -119,7 +117,7 @@ class App extends Component {
         <div>
           <Inventory data={this.state.inventory} />
           <hr />
-          <Usage data={this.state.usage} />
+          <Usage data={this.state.usage} users={this.state.users} />
         </div>
       </div>
     );

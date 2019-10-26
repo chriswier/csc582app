@@ -42,6 +42,33 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
   padding-left: 5px;
 }
 
+.inventory {
+  border-bottom: 2px dashed grey;
+  border-top: 2px dashed grey;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.inventory span {
+  display: inline-block;
+  width: 150px;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-family: 'Georgia';
+}
+
+.inventory span:first-letter {
+  font-size: 22px;
+}
+
+.inventoryitems {
+  font-size: 18px;
+}
+
+.inventoryitems span {
+  display: inline-block;
+  width: 150px;
+}
 .result {
   background-color: #F7F7F7;
   border-color: #E5E5E5;

@@ -28,7 +28,7 @@ async function init() {
     });
 
     router.get('/users', (req, res) => {
-      handleUserRequest(req,res);
+      handleUsersRequest(req,res);
     });
 
     router.get('/usage', (req, res) => {
@@ -87,7 +87,7 @@ async function handleInventoryRequest(request, response) {
   response.json(inventory);
 }
 
-//  Handle inventory request
+//  Handle Usage request
 async function handleUsageRequest(request, response) {
   console.log("usage request");
 
@@ -130,6 +130,51 @@ async function handleUsageRequest(request, response) {
   // return everything back
   response.json(usage);
 }
+
+//  Handle inventory request
+async function handleUsersRequest(request, response) {
+  console.log("users request");
+
+  // inventory variable to store SQL results from usage
+  let users = [];
+
+  // oracle lookup
+  let connection;
+  try {
+    connection = await oracledb.getConnection();
+    const result = await connection.execute(
+      `SELECT * FROM USERS`
+    );
+
+    // if I have rows (I should), use the rows from results to populate the usage var
+    if(result.rows.length !== 0) {
+       console.log(result.metaData);
+       console.log(result.rows);
+       users = result.rows;
+    }
+    else {
+       console.log("No users rows!");
+       console.log(result);
+    }
+  } catch(err) {
+    console.error(err.message);
+  } finally {
+    if(connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
+  // update the reply
+  console.log("Users: ",users,"\n");
+
+  // return everything back
+  response.json(users);
+}
+
 
 
 // functions to close out successfully; bind to SIG_INT and SIG_TERM
