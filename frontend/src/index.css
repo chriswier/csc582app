@@ -16,6 +16,10 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
   color: #FFFFFF;
 }
 
+.h2css {
+  margin-bottom: 2px;
+}
+
 .searchSpan {
   background-color: #00274c;
   border-radius: 8px;
@@ -51,7 +55,7 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
 
 .inventory span {
   display: inline-block;
-  width: 150px;
+  width: 250px;
   font-size: 16px;
   text-transform: uppercase;
   font-family: 'Georgia';
@@ -67,8 +71,14 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
 
 .inventoryitems span {
   display: inline-block;
-  width: 150px;
+  width: 250px;
+  margin-left: 0px;
+  padding: 2px;
+  border-bottom: 1px dotted grey;
+  border-left: 1px dotted grey;
+  padding-left: 2px;
 }
+
 .result {
   background-color: #F7F7F7;
   border-color: #E5E5E5;

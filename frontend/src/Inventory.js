@@ -24,15 +24,13 @@ class Inventory extends React.Component {
 
   render() {
 
+    // deal with empty initial state
+    if(this.props.initial === 1) {
+      return(<p>&nbsp;</p>);
+    }
+
     // get my data
     const data = this.props.data;
-    console.log("data is:",data);
-    console.log("inventory length:",data.length);
-
-    // css
-    const h2css = {
-      marginBottom: '2px'
-    }
 
     // render each element in the inventory data hash
     const myInventory = data.map((dat) => {
@@ -43,7 +41,7 @@ class Inventory extends React.Component {
     // temp
     return (
       <div>
-      <h2 style={h2css}>Master Inventory List</h2>
+      <h2 className="h2css">Master Inventory List:</h2>
       <div className="inventory"><span>Item</span> <span>Quantity</span></div><br />
       {myInventory}
       </div>

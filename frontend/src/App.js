@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Inventory from './Inventory.js';
 import Usage from './Usage.js';
+import ChangeBar from './ChangeBar.js';
 import logo from './CSIS.Stamp.Vert.eps200x200.jpg';
 import './index.css';
 
@@ -11,7 +12,11 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    //this.getDataFromDb = this.getDataFromDb.bind(this);
+
+    this.onChangeBarSubmit = this.onChangeBarSubmit.bind(this);
+    this.onUserChange = this.onUserChange.bind(this);
+    this.onItemChange = this.onItemChange.bind(this);
+    this.onQuantityChange = this.onQuantityChange.bind(this);
 
     // initialize the state
     this.state = {
@@ -19,7 +24,12 @@ class App extends Component {
       inventory: [],
       usage: [],
       message: ' ',
+      errorstate: 0,
       intervalIsSet: false,
+      initial: 1,
+      changeuser: 1,
+      changeitem: 1,
+      changequantity: 0,
     };
   }
 
@@ -42,7 +52,7 @@ class App extends Component {
 
     // set auto refresh of data
     if(!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 20000);
+      let interval = setInterval(this.getDataFromDb, 1000);
       this.setState({ intervalIsSet: interval });
     }
   }
@@ -74,9 +84,66 @@ class App extends Component {
     .then((data) => data.json())
     .then((res) => this.setState({ usage: res }));
 
-    // log it to see if it worked
-    console.log("new state",this.state);
+    // after an initial load, set the initial to 0
+    this.setState({ initial: 0 });
+  }
 
+  // handle all form changes; update state
+  onChangeBarSubmit(e) {
+    console.log("Change bar submit:",this.state);
+    this.setState({ message: " ", errorstate: 0 });
+
+    // check to make sure quantity is a number
+    if(!(Number.isInteger(parseInt(this.state.changequantity)))) {
+      this.setState({ message: "Non-integer quantity!", errorstate: 1 });
+      console.log("Non-integer quantity",this.state.changequantity);
+      return;
+    }
+
+    if(parseInt(this.state.changequantity) === 0) {
+      this.setState({ message: "Non-zero quantity required!", errorstate: 1 });
+      return;
+    }
+
+    // temp variables
+    let resultmessage = "";
+    let resulterrorstate = 0;
+
+    // create the data I'm uploading to the backend
+    let uploaddata = {
+      userid: parseInt(this.state.changeuser),
+      invid: parseInt(this.state.changeitem),
+      quantity: parseInt(this.state.changequantity),
+    };
+
+    // upload it
+    fetch('http://' + host + ':4001/api/inventoryChange', {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(uploaddata),
+    })
+    .then((data) => data.json())
+    .then(function(res) {
+      console.log("submit res",res);
+      resultmessage = res.message;
+      resulterrorstate = res.errorstate;
+    });
+    
+    this.setState({ message: resultmessage, errorstate: resulterrorstate });
+  }
+
+  onUserChange(value) {
+    this.setState({ changeuser: parseInt(value) });
+    //console.log("onUserChange:",this.state);
+  }
+  onItemChange(value) {
+    this.setState({ changeitem: parseInt(value) });
+    //console.log("onItemChange:",this.state);
+  }
+  onQuantityChange(value) {
+    this.setState({ changequantity: value });
+    //console.log("onQuantityChange:",this.state);
   }
 
   // deal with the page render
@@ -115,9 +182,9 @@ class App extends Component {
         {this.state.message}
         </div>
         <div>
-          <Inventory data={this.state.inventory} />
-          <hr />
-          <Usage data={this.state.usage} users={this.state.users} />
+          <ChangeBar initial={this.state.initial} users={this.state.users} inventory={this.state.inventory} state={this.state} onUserChange={this.onUserChange} onItemChange={this.onItemChange} onQuantityChange={this.onQuantityChange} onChangeBarSubmit={this.onChangeBarSubmit} />
+          <Inventory initial={this.state.initial} data={this.state.inventory} />
+          <Usage initial={this.state.initial} data={this.state.usage} users={this.state.users} inventory={this.state.inventory} />
         </div>
       </div>
     );
