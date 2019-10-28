@@ -59,7 +59,7 @@ class Usage extends React.Component {
     // temp
     return (
       <div>
-        <h2 className="h2css">Usage Log:</h2>
+        <h2 className="h2css">Usage Log (Last 5 entries):</h2>
         <div className="inventory"><span>Date</span> <span>User</span> <span>Item</span> <span>Quantity</span></div><br />
         {myLog}
       </div>
