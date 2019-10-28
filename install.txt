@@ -120,5 +120,6 @@ NodeJS Overall Project Setup:
 
 cd /home/chris/csc582app/
 npm start
-5. (sudo) Edit /etc/rc.local :
+5. $ chmod 755 start.sh
+6. (sudo) Edit /etc/rc.local :
 sudo -iu chris /usr/bin/screen -dmS nodejshwapp bash -c '/home/chris/csc582app/start.sh'
