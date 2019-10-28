@@ -90,7 +90,7 @@ class App extends Component {
 
   // handle all form changes; update state
   onChangeBarSubmit(e) {
-    console.log("Change bar submit:",this.state);
+    //console.log("Change bar submit:",this.state);
     this.setState({ message: " ", errorstate: 0 });
 
     // check to make sure quantity is a number
@@ -104,10 +104,6 @@ class App extends Component {
       this.setState({ message: "Non-zero quantity required!", errorstate: 1 });
       return;
     }
-
-    // temp variables
-    let resultmessage = "";
-    let resulterrorstate = 0;
 
     // create the data I'm uploading to the backend
     let uploaddata = {
@@ -124,13 +120,9 @@ class App extends Component {
       body: JSON.stringify(uploaddata),
     })
     .then((data) => data.json())
-    .then(function(res) {
-      console.log("submit res",res);
-      resultmessage = res.message;
-      resulterrorstate = res.errorstate;
-    });
-    
-    this.setState({ message: resultmessage, errorstate: resulterrorstate });
+    .then((res) => this.setState({ message: res.message, errorstate: res.errorstate}));
+   
+    //console.log("state",this.state); 
   }
 
   onUserChange(value) {
@@ -178,11 +170,9 @@ class App extends Component {
           Professor: Dr. Halil Bisgin<br /><br />
           Provides a simple example inventory application.  Application is pre-populated with inventory numbers, and users can add / withdraw from it.  All inventory must not be non-negative, which provides a bounds for a failing update to meet homework objectives for rollbacks.
           </div>
-        <div style={{padding: 5}}>
-        {this.state.message}
-        </div>
+        <div style={{padding: 5}}> </div>
         <div>
-          <ChangeBar initial={this.state.initial} users={this.state.users} inventory={this.state.inventory} state={this.state} onUserChange={this.onUserChange} onItemChange={this.onItemChange} onQuantityChange={this.onQuantityChange} onChangeBarSubmit={this.onChangeBarSubmit} />
+          <ChangeBar initial={this.state.initial} users={this.state.users} inventory={this.state.inventory} state={this.state} onUserChange={this.onUserChange} onItemChange={this.onItemChange} onQuantityChange={this.onQuantityChange} onChangeBarSubmit={this.onChangeBarSubmit} /><br /><br />
           <Inventory initial={this.state.initial} data={this.state.inventory} />
           <Usage initial={this.state.initial} data={this.state.usage} users={this.state.users} inventory={this.state.inventory} />
         </div>

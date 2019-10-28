@@ -209,7 +209,7 @@ async function handlePostInventoryChangeRequest(request, response) {
   // if there is an error, especially in the update inventory part, catch it and rollback the info
   catch(err) {
     console.error(err);
-    reply.message = "SQL Error on Submit! Transaction rolled back. Error message is: " + err.message;
+    reply.message = "SQL Error! Transaction rolled back. " + err.message;
     reply.errorstate = 1;
     await connection.rollback();
   }

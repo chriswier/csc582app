@@ -104,3 +104,21 @@ NodeJS Frontend React Setup:
 4. $ rm src/App.css src/App.test.js src/index.css src/logo.svg
 5. $ Edit node_modules/react-scripts/scripts/start.js - set DEFAULT_PORT to default to 4000 not 3000
 6. $ Edit src/App.js, and other changes in src/ and public/ !
+
+NodeJS Overall Project Setup:
+(run as your normal unprivileged user)
+----------
+1. $ npm init
+2. $ npm install concurrently 
+3. $ Edit package.json
+ "scripts": {
+   "start": "concurrently \"cd backend && node backend.js\" \"cd frontend && npm start\""
+ },
+4. $ Create start.sh
+
+#!/bin/bash
+
+cd /home/chris/csc582app/
+npm start
+5. (sudo) Edit /etc/rc.local :
+sudo -iu chris /usr/bin/screen -dmS nodejshwapp bash -c '/home/chris/csc582app/start.sh'

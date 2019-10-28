@@ -1,0 +1,68 @@
+The main development is done in a few files:
+
+Frontend Important Files:
+--------------------------------------------------------------------
+
+frontend/src/App.js - the main React web frontend.  Tracks the state and setups
+ the whole UI.  Queries the backend via API every 1 second and re-writes the 
+ inventory and usage log.  Upon inventory change submit, posts to the backend
+ via API again.  Maintains in the state the inventory table (retrieved via
+ the backend with SQL), the users tables (retrieved via the backend with SQL),
+ and the last five entries in the usage log (retrieved via the backend with 
+ SQL with limited results).  
+
+frontend/src/Inventory.js - React component responsible for rendering the 
+ Master Inventory List. Iterates over the state from the main App to render
+ each row, which was retrieved from the database.
+
+frontend/src/Usage.js - React component responsible for rendering the Usage
+  Log. Iterates over the state from the main App to render each row, which was 
+  retrieved from the database. Utilizes the Inventory and Users list stored
+  in the central state.
+
+frontend/src/ChangeBar.js - React component responsible for rendering the
+  Inventory Change form. Uses the Users and Inventory list stored in the 
+  central state.  Passes up all changes to the main App function for changing
+  of the state, and passes up submission to the main App for sending to the 
+  backend (and SQL).
+
+frontend/src/index.css - main CSS file
+frontend/src/CSIS.Stamp.Vert.eps200x200.jpg - UMFlint Logo
+
+Backend Important Files:
+--------------------------------------------------------------------
+
+backend/backend.js - the main backend script that deals with everything.  Sets
+  up an HTTP API that it listens for GET/POST requests from the frontend.  Sets
+  up Oracle DB connection to the localhost SQL server.
+
+  Requests to the following URLs are handled with functions:
+  /api/inventory - handleInventoryRequest()
+  /api/users - handleUsersRequest()
+  /api/usage - handleUsageRequest()
+  /api/inventoryChange - handlePostInventoryChangeRequest()
+
+  handleInventoryRequest() - performs a SELECT * FROM INVENTORY and returns
+    relevant formatted JSON.  All rows are retrived via the node-oracledb
+    rows() function, which retrieves all results and puts them into an array.
+
+  handleUsersRequest() - performs a SELECT * FROM USERS and returns relevant
+    formatted JSON.  All rows are retrieved via the node-oracledb
+    rows() function, which retrieves all results and puts them into an array.
+
+  handleUsageRequest() - performs a SELECT * FROM USAGE ORDER BY TIMELOG DESC 
+    OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY and returns relevant
+    formatted JSON.  All rows are retrieved via the node-oracledb
+    rows() function, which retrieves all results and puts them into an array.
+
+  handlePostInventoryChangeRequest() - performs two SQL statements back to back
+    to handle logging changes into the USAGE table, and updating the INVENTORY
+    table.  First, attempts to INSERT INTO USAGE with a new USAGEID, and
+    provided userid, invid, and quantity from the frontend.  Auto-adds the 
+    CURRENT_TIMESTAMP in the SQL statement to deal with the timestamp.  Second,
+    attempts to UPDATE INVENTORY SET QUANTITY=QUANTITY-:quantitytaken WHERE
+    INVID=:invid . This update only succeeds if the QUANTITY stays above 0; if
+    it goes negative, a CONSTRAINT error will occur.  If both statements are
+    successful, the transactions will be committed.  If either have an error,
+    the transactions are rolled back.  Returns a message and errorstate back
+    to the frontend.

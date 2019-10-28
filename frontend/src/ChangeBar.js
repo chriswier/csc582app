@@ -1,5 +1,13 @@
 import React from 'react';
 
+function genStateSymbol(myState) {
+    if(myState.errorstate === 0) {
+      return(<span className="stategreen">&#10004;</span>);
+    } else {
+      return(<span className="statered">&#9888;</span>);
+    }
+}
+
 class ChangeBar extends React.Component {
   constructor(props) {
     super(props);
@@ -53,14 +61,18 @@ class ChangeBar extends React.Component {
       return(<option value={ivn[0]} key={keyval}>{ivn[1]}</option>);
     });
 
+    // state stuff
+    let stateSymbol = genStateSymbol(state);
+
     return (
       <form onSubmit={this.handleSubmit}>
         <span className="searchSpan">Inventory Change: &nbsp; &nbsp;
           <select value={changeuser} name="user" onChange={this.handleUserChange}>{myUsers}</select> &nbsp;
           <select value={changeitem} name="item" onChange={this.handleItemChange}>{myInventory}</select> &nbsp;
-          Used Quantity: <input type="text" name="qty" value={changequantity} onChange={this.handleQuantityChange}/> &nbsp;
+          Quantity: <input style={{width: 30}} type="text" name="qty" value={changequantity} onChange={this.handleQuantityChange}/> &nbsp;
           <input type="submit" value="Submit" />
-        </span>
+        </span> <span className="stateSpan">State: {stateSymbol} {state.message}</span>
+        <br />
       </form>
     );
   }

@@ -1,0 +1,22 @@
+{
+  "name": "csc582app",
+  "version": "1.0.0",
+  "description": "CSC582 UMFlint 19FA Homework Example Inventory App",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"cd backend && node backend.js\" \"cd frontend && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chriswier/csc582app.git"
+  },
+  "author": "Chris Wieringa chris@wieringafamily.com cwiering@umich.edu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chriswier/csc582app/issues"
+  },
+  "homepage": "https://github.com/chriswier/csc582app#readme",
+  "dependencies": {
+    "concurrently": "^5.0.0"
+  }
+}

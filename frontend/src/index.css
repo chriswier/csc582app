@@ -20,6 +20,16 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
   margin-bottom: 2px;
 }
 
+.stateSpan {
+  display: inline-block;
+  font-family: 'Georgia';
+  font-size: 16px;
+  padding: 10px 20px;
+  text-decoration: none;
+  float: left;
+  width: 450px;
+}
+
 .searchSpan {
   background-color: #00274c;
   border-radius: 8px;
@@ -30,6 +40,7 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
   font-weight: bold;
   padding: 10px 20px;
   text-decoration: none;
+  float: left;
 }
 
 .searchSpan a:link, .searchSpan a:visited {
@@ -99,3 +110,10 @@ a, a:visited, a:focus, a:link, a:active, a:hover {
   float: left;
 }
 
+.stategreen {
+  color: green;
+}
+
+.statered {
+  color: red;
+}
